@@ -5,10 +5,8 @@
 # clean      — delete build directory; required when adding new dependencies or changing cache flags
 # rebuild    — full clean + build from scratch
 #
-# nproc=Linux, sysctl=macOS for CPU core detection
-
 BUILD_DIR := build
-JOBS      := $(shell nproc 2>/dev/null || sysctl -n hw.logicalcpu)
+JOBS      := $(shell nproc)
 
 .PHONY: configure build test run-tests clean rebuild
 

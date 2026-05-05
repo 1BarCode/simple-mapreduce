@@ -15,6 +15,7 @@ include(FetchContent)
 # Disable tests/examples/install rules in all fetched dependencies
 set(gRPC_BUILD_TESTS        OFF CACHE BOOL "" FORCE)
 set(gRPC_BUILD_CSHARP_EXT   OFF CACHE BOOL "" FORCE)
+set(gRPC_ZLIB_PROVIDER      "package" CACHE STRING "" FORCE)
 set(protobuf_BUILD_TESTS     OFF CACHE BOOL "" FORCE)
 set(protobuf_INSTALL         OFF CACHE BOOL "" FORCE)
 set(utf8_range_ENABLE_INSTALL OFF CACHE BOOL "" FORCE)
@@ -25,7 +26,7 @@ set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
 FetchContent_Declare(
     gRPC
     GIT_REPOSITORY https://github.com/grpc/grpc
-    GIT_TAG        v1.66.2
+    GIT_TAG        v1.68.1
     GIT_SHALLOW    TRUE
 )
 
