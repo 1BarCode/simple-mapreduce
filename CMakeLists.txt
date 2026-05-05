@@ -9,17 +9,50 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Dependencies
 # ---------------------------------------------------------------------------
 find_package(Threads REQUIRED)
-find_package(Protobuf REQUIRED)
-find_package(gRPC CONFIG REQUIRED)
+
+include(FetchContent)
+
+# Disable tests/examples/install rules in all fetched dependencies
+set(gRPC_BUILD_TESTS        OFF CACHE BOOL "" FORCE)
+set(gRPC_BUILD_CSHARP_EXT   OFF CACHE BOOL "" FORCE)
+set(protobuf_BUILD_TESTS     OFF CACHE BOOL "" FORCE)
+set(protobuf_INSTALL         OFF CACHE BOOL "" FORCE)
+set(utf8_range_ENABLE_INSTALL OFF CACHE BOOL "" FORCE)
+set(ABSL_BUILD_TESTING       OFF CACHE BOOL "" FORCE)
+set(ABSL_ENABLE_INSTALL      OFF CACHE BOOL "" FORCE)
+set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
+
+FetchContent_Declare(
+    gRPC
+    GIT_REPOSITORY https://github.com/grpc/grpc
+    GIT_TAG        v1.66.2
+    GIT_SHALLOW    TRUE
+)
+
+# Allow CMake 4.x to configure deps that declare cmake_minimum_required < 3.5
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+# Propagate our C++17 standard into abseil (suppresses its future-default warning)
+set(ABSL_PROPAGATE_CXX_STD ON)
+
+# gRPC transitively fetches protobuf and abseil
+FetchContent_MakeAvailable(gRPC)
+
+# Normalize targets so the rest of the file works whether deps were fetched or
+# found via find_package (namespaced vs non-namespaced targets differ)
+if(NOT TARGET gRPC::grpc++)
+    add_library(gRPC::grpc++ ALIAS grpc++)
+endif()
+if(NOT TARGET protobuf::libprotobuf)
+    add_library(protobuf::libprotobuf ALIAS libprotobuf)
+endif()
 
 # ---------------------------------------------------------------------------
 # Common library (api + common + rpc + runtime)
 # ---------------------------------------------------------------------------
 file(GLOB_RECURSE MR_COMMON_SRCS
-    src/api/*.cpp
-    src/common/*.cpp
-    src/rpc/*.cpp
-    src/runtime/*.cpp
+    src/api/*.cc
+    src/common/*.cc
+    src/rpc/*.cc
     src/runtime/*.cc
 )
 
@@ -38,7 +71,7 @@ target_link_libraries(mr_common PUBLIC
 # ---------------------------------------------------------------------------
 # Client library
 # ---------------------------------------------------------------------------
-file(GLOB_RECURSE MR_CLIENT_SRCS src/client/*.cpp)
+file(GLOB_RECURSE MR_CLIENT_SRCS src/client/*.cc)
 
 add_library(mr_client STATIC ${MR_CLIENT_SRCS})
 
@@ -51,8 +84,8 @@ target_link_libraries(mr_client PUBLIC mr_common)
 # ---------------------------------------------------------------------------
 # Executables
 # ---------------------------------------------------------------------------
-add_executable(master src/main.cpp)
+add_executable(master src/master_main.cc)
 target_link_libraries(master PRIVATE mr_common)
 
-add_executable(client src/client.cpp)
+add_executable(client src/client_main.cc)
 target_link_libraries(client PRIVATE mr_client)

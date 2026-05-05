@@ -9,7 +9,7 @@
 // Facade: provision -> register -> monitor
 class ClusterManager {
 public:
-    // Status BootstrapCluster(int num_workers);
+    // absl::Status BootstrapCluster(int num_workers);
     void Shutdown();
 
 private:
