@@ -7,6 +7,8 @@
 #include <unordered_map>
 #include <mutex>
 
+struct SubmitJobRequest {}; // remove after getting real class
+
 class JobManager {
 public:
     JobId CreateJob(SubmitJobRequest req);
