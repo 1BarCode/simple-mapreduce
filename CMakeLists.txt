@@ -29,13 +29,20 @@ FetchContent_Declare(
     GIT_SHALLOW    TRUE
 )
 
+FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest
+    GIT_TAG        v1.15.2
+    GIT_SHALLOW    TRUE
+)
+
 # Allow CMake 4.x to configure deps that declare cmake_minimum_required < 3.5
 set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
 # Propagate our C++17 standard into abseil (suppresses its future-default warning)
 set(ABSL_PROPAGATE_CXX_STD ON)
 
 # gRPC transitively fetches protobuf and abseil
-FetchContent_MakeAvailable(gRPC)
+FetchContent_MakeAvailable(gRPC googletest)
 
 # Normalize targets so the rest of the file works whether deps were fetched or
 # found via find_package (namespaced vs non-namespaced targets differ)
@@ -80,6 +87,12 @@ target_include_directories(mr_client PUBLIC
 )
 
 target_link_libraries(mr_client PUBLIC mr_common)
+
+# ---------------------------------------------------------------------------
+# Tests
+# ---------------------------------------------------------------------------
+enable_testing()
+add_subdirectory(test)
 
 # ---------------------------------------------------------------------------
 # Executables

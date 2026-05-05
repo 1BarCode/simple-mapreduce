@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include <grpcpp/grpcpp.h>
+
 #include "mr/master/jobs/job_manager.h"
 #include "mr/master/cluster/cluster_manager.h"
 #include "mr/master/scheduler/scheduler.h"
@@ -13,10 +15,10 @@ class JobTrackerServiceImpl
 {
 public:
 
-    // grpc::Status RegisterWorker(...)        override;
-    // grpc::Status Heartbeat(...)              override;
-    // grpc::Status ReportTaskCompletion(...)   override;
-    // grpc::Status ReportTaskFailure(...)      override;
+    grpc::Status RegisterWorker(...)        override;
+    grpc::Status Heartbeat(...)              override;
+    grpc::Status ReportTaskCompletion(...)   override;
+    grpc::Status ReportTaskFailure(...)      override;
 
 private:
     std::shared_ptr<JobManager>         jobs_;

@@ -2,6 +2,9 @@
 
 #include <memory>
 
+#include "absl/status/status.h"
+// #include "absl/status/statusor.h"
+
 #include "mr/master/cluster/worker_provisioner.h"
 #include "mr/master/cluster/worker_registry.h"
 #include "mr/master/cluster/heartbeat_monitor.h"
@@ -9,7 +12,7 @@
 // Facade: provision -> register -> monitor
 class ClusterManager {
 public:
-    // absl::Status BootstrapCluster(int num_workers);
+    absl::Status BootstrapCluster(int num_workers);
     void Shutdown();
 
 private:

@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include <grpcpp/grpcpp.h>
+
 #include "mr/master/jobs/job_manager.h"
 #include "mr/master/cluster/cluster_manager.h"
 
@@ -15,11 +17,11 @@ public:
         std::shared_ptr<ClusterManager>
     );
 
-    // grpc::Status SubmitJob(...)     override;
-    // grpc::Status GetJobStatus(...)  override;
-    // grpc::Status GetCounters(...)   override;
-    // grpc::Status GetClusterStatus(...) override;
-    // grpc::Status KillJob(...)       override;
+    grpc::Status SubmitJob(...)     override;
+    grpc::Status GetJobStatus(...)  override;
+    grpc::Status GetCounters(...)   override;
+    grpc::Status GetClusterStatus(...) override;
+    grpc::Status KillJob(...)       override;
 
 private:
     std::shared_ptr<JobManager>     jobs_;
