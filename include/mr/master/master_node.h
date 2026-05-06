@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include "absl/status/status.h"
+
 #include "mr/common/clock.h"
 #include "mr/common/logger.h"
 #include "mr/master/master_config.h"
@@ -17,6 +19,10 @@ class MasterNode {
 public:
     explicit MasterNode(MasterConfig cfg);
     ~MasterNode();
+
+    // Start RPC server, provision workers, enter run loop
+    absl::Status Start();
+    void Shutdown();
 
 private:
     MasterConfig                        config_;

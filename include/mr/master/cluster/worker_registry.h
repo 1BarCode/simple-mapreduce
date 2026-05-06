@@ -6,6 +6,8 @@
 #include <vector>
 #include <optional>
 
+#include <absl/status/status.h>
+
 struct WorkerId;
 struct WorkerInfo;
 struct WorkerSlots;
@@ -15,7 +17,7 @@ enum class WorkerState {};
 // thread-safe map of live workers
 class WorkerRegistry {
 public:
-    // Status Register(WorkerInfo info);
+    absl::Status Register(WorkerInfo info);
     void UpdateHeartbeat(WorkerId id, int64_t ts_ms);
     void MarkDead(WorkerId id);
 

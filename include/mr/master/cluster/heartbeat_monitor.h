@@ -4,6 +4,7 @@
 #include <memory>
 #include <chrono>
 #include <atomic>
+#include <thread>
 
 #include "mr/master/cluster/worker_registry.h"
 
