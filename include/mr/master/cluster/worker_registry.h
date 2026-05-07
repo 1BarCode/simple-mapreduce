@@ -22,8 +22,8 @@ public:
     void MarkDead(WorkerId id);
 
     std::vector<WorkerInfo> GetLiveWorkers() const;
-    WorkerSlots GetFreeSlots(WorkerId) const;
-    std::optional<WorkerInfo> Find(WorkerId) const;
+    WorkerSlots GetFreeSlots(const WorkerId& id) const;
+    std::optional<WorkerInfo> Find(const WorkerId& id) const;
 
 private:
     std::unordered_map<WorkerId, WorkerState>   workers_;

@@ -1,25 +1,21 @@
 #pragma once
 
-#include "mr/common/Config.h"
+#include <cstdint>
+#include <mutex>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+#include "mr/common/config.h"
+#include "mr/common/ids.h"
 #include "mr/master/jobs/task_in_progress.h"
 
-#include <vector>
-#include <unordered_map>
-#include <cstdint>
-#include <string>
-#include <mutex>
-
-
-struct JobId {};
-
-enum class JobState {
-
-};
+enum class JobState {};
 
 class JobInProgress {
 public:
-    const JobId                                 id;
-    const JobConf                               conf;
+    const JobId   id;
+    const JobConf conf;
 
     float MapProgress() const;
     float ReduceProgress() const;
@@ -28,8 +24,8 @@ public:
 
 private:
     JobState                                    state_;
-    std::vector<TaskInProgress>                 map_tasks;
-    std::vector<TaskInProgress>                 reduce_tasks;
-    std::unordered_map<std::string, int64_t>    counters;
+    std::vector<TaskInProgress>                 map_tasks_;
+    std::vector<TaskInProgress>                 reduce_tasks_;
+    std::unordered_map<std::string, int64_t>    counters_;
     std::mutex                                  mtx_;
 };

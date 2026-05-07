@@ -1,9 +1,11 @@
-#include <gtest/gtest.h>
 #include "mr/runtime/threadpool.h"
 
 #include <atomic>
 #include <chrono>
+#include <mutex>
 #include <vector>
+
+#include <gtest/gtest.h>
 
 TEST(ThreadPoolTest, AllTasksCompleteBeforeDestructor) {
     std::atomic<int> counter{0};

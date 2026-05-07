@@ -24,7 +24,7 @@ public:
     void Stop();
 
 private:
-    void RunLoop(); // run in backgorund thread
+    void RunLoop(); // run in background thread
 
     std::shared_ptr<WorkerRegistry> registry_;
     std::chrono::milliseconds       timeout_;

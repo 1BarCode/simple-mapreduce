@@ -1,3 +1,3 @@
-class TaskInProgress {
+#pragma once
 
-};
+class TaskInProgress {};
