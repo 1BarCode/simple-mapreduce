@@ -14,8 +14,8 @@ public:
     ~ThreadPool();
 
     ThreadPool(const ThreadPool&) = delete;
-    ThreadPool& operator=(const ThreadPool&) = delete;
     ThreadPool(ThreadPool&&) = delete;
+    ThreadPool& operator=(const ThreadPool&) = delete;
     ThreadPool& operator=(ThreadPool&&) = delete;
 
     void Enqueue(std::function<void()> task);

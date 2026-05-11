@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mr/master/jobs/job_in_progress.h"
+#include "mr/common/ids.h"
 
 #include <memory>
 #include <vector>

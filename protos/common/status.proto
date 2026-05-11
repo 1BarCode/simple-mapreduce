@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package mr;
+
+enum JobState {
+    JOB_STATE_UNSPECIFIED = 0;
+    PREP = 1;
+    RUNNING_MAP = 2;
+    RUNNING_REDUCE = 3;
+    SUCCEEDED = 4;
+    FAILED = 5;
+    KILLED = 6;
+}
+
+enum TaskState {
+    TASK_STATE_UNSPECIFIED = 0;
+    UNASSIGNED = 1;
+    ASSIGNED = 2;
+    RUNNING = 3;
+    SUCCEEDED_TASK = 4;
+    FAILED_TASK = 5;
+    KILLED_TASK = 6;
+}
+
+enum TaskType {
+    TASK_TYPE_UNSPECIFIED = 0;
+    MAP = 1;
+    REDUCE = 2;
+}

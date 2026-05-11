@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+package mr;
+
+import "common/ids.proto";
+import "common/status.proto";
+import "common/types.proto";
+
+service JobTrackerService {
+    rpc RegisterWorker(RegisterWorkerRequest) returns (RegisterWorkerReply);
+    rpc Heartbeat(HeartbeatRequest) returns (HeartbeatReply);
+    rpc ReportTaskCompletion(ReportTaskCompletionRequest) returns (ReportTaskCompletionReply);
+    rpc ReportTaskFailure(ReportTaskFailureRequest) returns (ReportTaskFailureReply);
+}
+
+message RegisterWorkerRequest {
+    WorkerInfo worker = 1;
+    int64 start_time_ms = 2;
+    string version = 3;
+}
+
+message RegisterWorkerReply {
+    bool accepted = 1;
+    int32 heartbeat_interval_ms = 2;
+}
+
+message RunningTaskStatus {
+    TaskAttemptId attempt_id = 1;
+    TaskType type = 2;
+    TaskState state = 3;
+    float progress = 4;
+    string status_message = 5;
+}
+
+message HeartbeatRequest {
+    WorkerId worker_id = 1;
+    int32 free_map_slots = 2;
+    int32 free_reduce_slots = 3;
+    repeated RunningTaskStatus running_tasks = 4;
+    repeated TaskAttemptId just_finished = 5;
+    int64 timestamp_ms = 6;
+}
+
+message LaunchTaskAction {
+    TaskAssignment assignment = 1;
+}
+
+message KillTaskAction {
+    TaskAttemptId attempt_id = 1;
+    string reason = 2;
+}
+
+message HeartbeatReply {
+    repeated LaunchTaskAction launch_tasks = 1;
+    repeated KillTaskAction kill_tasks = 2;
+    int32 next_heartbeat_ms = 3;
+}
+
+message MapTaskResult {
+    repeated MapOutputLocation outputs = 1;
+    uint64 records_emitted = 2;
+}
+
+message ReduceTaskResult {
+    string output_file = 1;
+    uint64 records_emitted = 2;
+}
+
+message ReportTaskCompletionRequest {
+    WorkerId worker_id = 1;
+    TaskAttemptId attempt_id = 2;
+    TaskType type = 3;
+    repeated CounterEntry counters = 4;
+
+    oneof result {
+        MapTaskResult map_result = 10;
+        ReduceTaskResult reduce_result = 11;
+    }
+}
+
+message ReportTaskCompletionReply {
+    bool accepted = 1;
+}
+
+message ReportTaskFailureRequest {
+    WorkerId worker_id = 1;
+    TaskAttemptId attempt_id = 2;
+    TaskType type = 3;
+    string error_message = 4;
+    bool retryable = 5;
+}
+
+message ReportTaskFailureReply {
+    bool accepted = 1;
+}

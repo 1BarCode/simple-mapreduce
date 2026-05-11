@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package mr;
+
+import "common/ids.proto";
+
+service ShuffleDataService {
+    rpc FetchMapOutput(FetchMapOutputRequest) returns (stream ShuffleChunk);
+}
+
+message FetchMapOutputRequest {
+    TaskAttemptId map_attempt_id = 1;
+    int32 reduce_partition = 2;
+}
+
+message ShuffleChunk {
+    bytes data = 1;
+}

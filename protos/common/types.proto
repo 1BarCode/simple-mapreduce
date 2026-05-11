@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package mr;
+
+import "common/ids.proto";
+import "common/status.proto";
+
+message CounterEntry {
+    string name = 1;
+    int64 value = 2;
+}
+
+message InputSplit {
+    string input_path = 1;
+    uint64 offset = 2;
+    uint64 length = 3;
+    int32 split_number = 4;
+}
+
+message MapOutputLocation {
+    WorkerId worker_id = 1;
+    string worker_address = 2;
+    TaskAttemptId map_attempt_id = 3;
+    int32 reduce_partition = 4;
+    string file_path = 5;
+    uint64 size_bytes = 6;
+}
+
+message WorkerInfo {
+    WorkerId worker_id = 1;
+    string address = 2;
+    int32 map_slots = 3;
+    int32 reduce_slots = 4;
+    string work_dir = 5;
+}
+
+message TaskAssignment {
+    TaskAttemptId attempt_id = 1;
+    TaskType type = 2;
+
+    oneof spec {
+        MapTaskSpec map_spec = 10;
+        ReduceTaskSpec reduce_spec = 11;
+    }
+}
+
+message MapTaskSpec {
+    InputSplit split = 1;
+    string mapper_name = 2;
+    string combiner_name = 3;
+    string partitioner_name = 4;
+    int32 num_reduce_tasks = 5;
+    string job_work_dir = 6;
+}
+
+message ReduceTaskSpec {
+    int32 reduce_partition = 1;
+    string reducer_name = 2;
+    string output_format_name = 3;
+    repeated MapOutputLocation inputs = 4;
+    string output_path = 5;
+    string job_work_dir = 6;
+}

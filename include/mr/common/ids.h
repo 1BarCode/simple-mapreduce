@@ -21,6 +21,7 @@ struct JobId {
         return seq < other.seq;
     }
 
+    // e.g. "1716000000000/42"
     std::string ToString() const {
         return std::to_string(epoch) + "/" + std::to_string(seq);
     }
@@ -36,6 +37,8 @@ struct WorkerId {
 
     bool empty() const { return value.empty(); }
 
+    // e.g. "worker-0", "worker-1"
+    // or   "localhost:50051"
     const std::string& ToString() const { return value; }
 };
 
@@ -54,7 +57,8 @@ struct TaskId {
         return !(*this == other);
     }
 
-    // "1716000000000/42/map/7" and "1716000000000/42/reduce/7"
+    // e.g. "1716000000000/42/map/7"
+    //      "1716000000000/42/reduce/7"
     std::string ToString() const {
         return  job_id.ToString() + "/" +
                 (is_map ? "map" : "reduce") + "/" +

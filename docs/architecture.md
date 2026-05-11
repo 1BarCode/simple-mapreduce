@@ -12,6 +12,16 @@ The system has three runtime roles:
 
 Reducers fetch map outputs using gRPC after the master tells them where each partition is located. This follows the MapReduce design where the master stores intermediate file locations for completed map tasks and informs reducers accordingly [web:13][web:7].
 
+## Executables
+
+The system is built as three separate executables:
+
+- `mr_client` — the job submission CLI, built from `src/client_main.cc`.
+- `mr_master` — the cluster coordinator, built from `src/master_main.cc`.
+- `mr_worker` — the task executor, built from `src/worker_main.cc`. The master spawns one or more worker processes at startup by invoking this binary directly.
+
+User-defined mapper and reducer logic is compiled into `mr_worker`. Job authors subclass the `Mapper` and `Reducer` interfaces from the public API and register their implementations with a name. The worker binary links against this user code and looks up the registered class by name when the master assigns a task. This means each deployment produces a job-specific `mr_worker` binary that embeds the user's logic; no code is shipped over RPC.
+
 ## Design goals
 
 The design aims to:
@@ -69,7 +79,7 @@ The worker is analogous to Hadoop’s `TaskTracker`. Each worker process:
 - writes intermediate and final output files,
 - serves shuffle partitions to reducers.
 
-Workers are generic executors; they are not permanently designated as map-only or reduce-only nodes.
+Workers are generic executors; they are not permanently designated as map-only or reduce-only nodes. User-defined `Mapper` and `Reducer` subclasses are compiled directly into the worker binary and resolved by name at task execution time (see [Executables](#executables)).
 
 ## High-level flow
 
@@ -121,7 +131,7 @@ The public API is the stable user-facing layer:
 - `InputFormat`
 - `OutputFormat`
 
-This is the only layer job authors should typically depend on.
+This is the only layer job authors should depend on. A job is implemented by subclassing `Mapper` and `Reducer`, registering the implementations by name, and linking the resulting object files into the `mr_worker` binary.
 
 ### Master runtime
 
@@ -335,6 +345,8 @@ The goal is a clear, Hadoop-like MapReduce runtime, not a full Hadoop ecosystem 
 ## Summary of key decisions
 
 - Hadoop MRv1-inspired client/master/worker structure.
+- Three separate executables: `mr_client`, `mr_master`, `mr_worker`.
+- User logic (mapper/reducer) is compiled into `mr_worker` and resolved by name at runtime; no code shipped over RPC.
 - gRPC for both control-plane and shuffle IPC.
 - Master-provisioned local worker processes.
 - Heartbeat-driven task assignment.
