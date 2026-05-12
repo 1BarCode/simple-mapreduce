@@ -8,9 +8,7 @@
 
 #include <absl/status/status.h>
 
-struct WorkerId;
-struct WorkerInfo;
-struct WorkerSlots;
+#include "mr/common/types.h"
 
 enum class WorkerState {};
 
