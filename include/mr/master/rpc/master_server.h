@@ -20,5 +20,7 @@ public:
     void Shutdown();
 
 private:
-    std::unique_ptr<grpc::Server> grpc_server_;
+    std::shared_ptr<ClientMasterServiceImpl>    client_service_;
+    std::shared_ptr<JobTrackerServiceImpl>      job_tracker_service_;
+    std::unique_ptr<grpc::Server>               grpc_server_;
 };

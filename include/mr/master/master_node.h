@@ -27,7 +27,7 @@ public:
 private:
     MasterConfig                        config_;
 
-    // rpc
+    // rpc services
     std::unique_ptr<MasterServer>       master_server_;
 
     // cluster
