@@ -10,21 +10,21 @@
 
 class ThreadPool {
 public:
-    explicit ThreadPool(size_t numThreads);
+    explicit ThreadPool(size_t num_threads);
     ~ThreadPool();
 
     ThreadPool(const ThreadPool&) = delete;
-    ThreadPool& operator=(const ThreadPool&) = delete;
     ThreadPool(ThreadPool&&) = delete;
+    ThreadPool& operator=(const ThreadPool&) = delete;
     ThreadPool& operator=(ThreadPool&&) = delete;
 
     void Enqueue(std::function<void()> task);
 
 private:
     std::vector<std::thread>            workers_;
-    std::queue<std::function<void()>>   taskQueue_;
+    std::queue<std::function<void()>>   task_queue_;
     std::mutex                          task_mutex_;
     std::condition_variable             cv_;
 
-    bool                                stop_;
+    bool                                stop_ = false;
 };

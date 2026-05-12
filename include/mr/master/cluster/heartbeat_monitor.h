@@ -4,6 +4,9 @@
 #include <memory>
 #include <chrono>
 #include <atomic>
+#include <thread>
+
+#include <absl/status/status.h>
 
 #include "mr/master/cluster/worker_registry.h"
 
@@ -15,7 +18,7 @@ public:
 
     HeartbeatMonitor(
         std::shared_ptr<WorkerRegistry>, 
-        std::chrono::milliseconds timeout,
+        absl::Duration timeout,
         DeadCallback on_dead_cb
     );
 
@@ -23,7 +26,7 @@ public:
     void Stop();
 
 private:
-    void RunLoop(); // run in backgorund thread
+    void RunLoop(); // run in background thread
 
     std::shared_ptr<WorkerRegistry> registry_;
     std::chrono::milliseconds       timeout_;

@@ -55,6 +55,51 @@ if(NOT TARGET protobuf::libprotobuf)
 endif()
 
 # ---------------------------------------------------------------------------
+# Proto generation
+# ---------------------------------------------------------------------------
+set(PROTO_ROOT    ${CMAKE_SOURCE_DIR}/protos)
+set(PROTO_GEN_DIR ${CMAKE_BINARY_DIR}/generated/proto)
+
+file(GLOB_RECURSE ALL_PROTOS CONFIGURE_DEPENDS ${PROTO_ROOT}/*.proto)
+
+set(PROTO_SRCS "")
+
+foreach(proto IN LISTS ALL_PROTOS)
+    file(RELATIVE_PATH rel ${PROTO_ROOT} ${proto})
+    string(REGEX REPLACE "\\.proto$" "" stem ${rel})
+
+    set(pb_cc   ${PROTO_GEN_DIR}/${stem}.pb.cc)
+    set(pb_h    ${PROTO_GEN_DIR}/${stem}.pb.h)
+    set(grpc_cc ${PROTO_GEN_DIR}/${stem}.grpc.pb.cc)
+    set(grpc_h  ${PROTO_GEN_DIR}/${stem}.grpc.pb.h)
+
+    get_filename_component(out_subdir ${pb_cc} DIRECTORY)
+    file(MAKE_DIRECTORY ${out_subdir})
+
+    add_custom_command(
+        OUTPUT  ${pb_cc} ${pb_h} ${grpc_cc} ${grpc_h}
+        COMMAND $<TARGET_FILE:protobuf::protoc>
+                --cpp_out=${PROTO_GEN_DIR}
+                --grpc_out=${PROTO_GEN_DIR}
+                --plugin=protoc-gen-grpc=$<TARGET_FILE:grpc_cpp_plugin>
+                -I ${PROTO_ROOT}
+                ${proto}
+        DEPENDS ${proto} protobuf::protoc grpc_cpp_plugin
+        COMMENT "Generating stubs for ${rel}"
+        VERBATIM
+    )
+
+    list(APPEND PROTO_SRCS ${pb_cc} ${grpc_cc})
+endforeach()
+
+add_library(mr_proto STATIC ${PROTO_SRCS})
+target_include_directories(mr_proto PUBLIC ${PROTO_GEN_DIR})
+target_link_libraries(mr_proto PUBLIC
+    protobuf::libprotobuf
+    gRPC::grpc++
+)
+
+# ---------------------------------------------------------------------------
 # Common library (api + common + rpc + runtime)
 # ---------------------------------------------------------------------------
 file(GLOB_RECURSE MR_COMMON_SRCS
@@ -72,8 +117,7 @@ target_include_directories(mr_common PUBLIC
 
 target_link_libraries(mr_common PUBLIC
     Threads::Threads
-    protobuf::libprotobuf
-    gRPC::grpc++
+    mr_proto
 )
 
 # ---------------------------------------------------------------------------

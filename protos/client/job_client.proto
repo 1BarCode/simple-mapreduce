@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package mr;
+
+import "common/ids.proto";
+import "common/status.proto";
+import "common/types.proto";
+
+service ClientMasterService {
+  rpc SubmitJob(SubmitJobRequest) returns (SubmitJobReply);
+  rpc GetJobStatus(GetJobStatusRequest) returns (GetJobStatusReply);
+  rpc GetCounters(GetCountersRequest) returns (GetCountersReply);
+  rpc GetClusterStatus(GetClusterStatusRequest) returns (GetClusterStatusReply);
+  rpc KillJob(KillJobRequest) returns (KillJobReply);
+}
+
+message SubmitJobRequest {
+  string job_name = 1;
+  string input_path = 2;
+  string output_path = 3;
+
+  string mapper_name = 4;
+  string reducer_name = 5;
+  string combiner_name = 6;
+
+  int32 num_reduce_tasks = 10;
+  map<string, string> properties = 11;
+}
+
+message SubmitJobReply {
+  JobId job_id = 1;
+  JobState state = 2;
+}
+
+message GetJobStatusRequest {
+  JobId job_id = 1;
+}
+
+message JobStatusProto {
+  JobId job_id = 1;
+  JobState state = 2;
+  float map_progress = 3;
+  float reduce_progress = 4;
+  int32 total_maps = 5;
+  int32 completed_maps = 6;
+  int32 total_reduces = 7;
+  int32 completed_reduces = 8;
+  string status_message = 9;
+  int64 submit_time_ms = 10;
+  int64 start_time_ms = 11;
+  int64 finish_time_ms = 12;
+}
+
+message GetJobStatusReply {
+  JobStatusProto status = 1;
+}
+
+message GetCountersRequest {
+  JobId job_id = 1;
+}
+
+message GetCountersReply {
+  repeated CounterEntry counters = 1;
+}
+
+message GetClusterStatusRequest {}
+
+message ClusterStatusProto {
+  int32 total_workers = 1;
+  int32 live_workers = 2;
+  int32 dead_workers = 3;
+  int32 total_map_slots = 4;
+  int32 free_map_slots = 5;
+  int32 total_reduce_slots = 6;
+  int32 free_reduce_slots = 7;
+}
+
+message GetClusterStatusReply {
+  ClusterStatusProto status = 1;
+}
+
+message KillJobRequest {
+  JobId job_id = 1;
+}
+
+message KillJobReply {
+  bool accepted = 1;
+}
