@@ -26,7 +26,7 @@ public:
         mr::RegisterWorkerReply*          reply) override;
 
     grpc::Status Heartbeat(
-        grpc::ServerContext*       ctx,
+        grpc::ServerContext*        ctx,
         const mr::HeartbeatRequest* req,
         mr::HeartbeatReply*         reply) override;
 
@@ -36,7 +36,7 @@ public:
         mr::ReportTaskCompletionReply*          reply) override;
 
     grpc::Status ReportTaskFailure(
-        grpc::ServerContext*               ctx,
+        grpc::ServerContext*                ctx,
         const mr::ReportTaskFailureRequest* req,
         mr::ReportTaskFailureReply*         reply) override;
 

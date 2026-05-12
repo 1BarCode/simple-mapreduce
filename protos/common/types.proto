@@ -48,7 +48,6 @@ message MapTaskSpec {
     InputSplit split = 1;
     string mapper_name = 2;
     string combiner_name = 3;
-    string partitioner_name = 4;
     int32 num_reduce_tasks = 5;
     string job_work_dir = 6;
 }
@@ -56,7 +55,6 @@ message MapTaskSpec {
 message ReduceTaskSpec {
     int32 reduce_partition = 1;
     string reducer_name = 2;
-    string output_format_name = 3;
     repeated MapOutputLocation inputs = 4;
     string output_path = 5;
     string job_work_dir = 6;

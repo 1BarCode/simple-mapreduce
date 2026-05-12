@@ -12,8 +12,8 @@ class MasterServer {
 public:
     MasterServer(
         std::string address,
-        std::shared_ptr<ClientMasterServiceImpl>,
-        std::shared_ptr<JobTrackerServiceImpl>
+        std::shared_ptr<ClientMasterServiceImpl> client_service,
+        std::shared_ptr<JobTrackerServiceImpl> job_tracker_service
     );
 
     void Start();

@@ -1,7 +1,11 @@
 #pragma once
 
+#include "absl/status/statusor.h"
+#include "absl/strings/str_cat.h"
+#include "client/job_client.pb.h"
 #include "common/ids.pb.h"
 #include "common/types.pb.h"
+#include "mr/common/config.h"
 #include "mr/common/ids.h"
 #include "mr/common/types.h"
 
@@ -46,6 +50,25 @@ inline WorkerInfo FromProto(const mr::WorkerInfo& p) {
         p.reduce_slots(),
         p.work_dir(),
     };
+}
+
+inline absl::StatusOr<JobConf> FromProto(const mr::SubmitJobRequest& p) {
+    if (p.num_reduce_tasks() < 0) {
+        return absl::InvalidArgumentError(
+            absl::StrCat("num_reduce_tasks must be >= 0, got ", p.num_reduce_tasks()));
+    }
+    JobConf c;
+    c.job_name           = p.job_name();
+    c.input_path         = p.input_path();
+    c.output_path        = p.output_path();
+    c.mapper_name        = p.mapper_name();
+    c.reducer_name       = p.reducer_name();
+    c.combiner_name      = p.combiner_name();
+    c.num_reduce_tasks   = p.num_reduce_tasks();
+    for (const auto& [k, v] : p.properties()) {
+        c.properties[k] = v;
+    }
+    return c;
 }
 
 // ---- ToProto: domain -> proto ----

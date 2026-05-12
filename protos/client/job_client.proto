@@ -22,9 +22,6 @@ message SubmitJobRequest {
   string mapper_name = 4;
   string reducer_name = 5;
   string combiner_name = 6;
-  string partitioner_name = 7;
-  string input_format_name = 8;
-  string output_format_name = 9;
 
   int32 num_reduce_tasks = 10;
   map<string, string> properties = 11;
