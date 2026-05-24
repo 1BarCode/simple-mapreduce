@@ -20,8 +20,8 @@ public:
     grpc::Status SubmitJob(...)     override;
     grpc::Status GetJobStatus(...)  override;
     grpc::Status GetCounters(...)   override;
-    grpc::Status GetClusterStatus(...) override;
-    grpc::Status KillJob(...)       override;
+    // grpc::Status GetClusterStatus(...) override;
+    // grpc::Status KillJob(...)       override;
 
 private:
     std::shared_ptr<JobManager>     jobs_;

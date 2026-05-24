@@ -23,8 +23,8 @@ message SubmitJobRequest {
   string reducer_name = 5;
   string combiner_name = 6;
 
-  int32 num_reduce_tasks = 10;
-  map<string, string> properties = 11;
+  int32 num_reduce_tasks = 7;
+  map<string, string> properties = 8;
 }
 
 message SubmitJobReply {
